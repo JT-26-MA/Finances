@@ -30,8 +30,6 @@
 html,body{min-height:100vh;}
 body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:background .3s,color .3s;overflow-x:hidden;}
 .app{max-width:560px;margin:0 auto;padding-bottom:120px;}
-
-/* HEADER */
 .hdr{position:sticky;top:0;z-index:100;background:var(--bg);padding:14px 18px 10px;border-bottom:1px solid var(--bd);backdrop-filter:blur(20px);}
 .hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .logo{display:flex;align-items:center;gap:8px;}
@@ -44,8 +42,6 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
 .sdot{position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--gn);border:1.5px solid var(--bg);display:none;}
 .sdot.on{display:block;}.sdot.err{background:var(--rd);}.sdot.spin{background:var(--or);animation:blink 1s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.25;}}
-
-/* MONTH NAV */
 .mnav{display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:var(--rs);padding:7px 10px;box-shadow:var(--sh);}
 .marr{background:none;border:none;cursor:pointer;color:var(--t2);font-size:20px;padding:2px 10px;border-radius:7px;line-height:1;transition:all var(--tr);}
 .marr:hover{background:var(--bg3);color:var(--bl);}
@@ -53,42 +49,551 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
 .mlbl{font-size:.65rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:1px;}
 .mval{font-size:.9rem;font-weight:700;margin-top:2px;}
 .cur-pill{display:inline-block;background:var(--bl);color:#fff;font-size:.58rem;font-weight:800;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;margin-left:5px;vertical-align:middle;}
-
-/* TABS */
 .tabs{display:flex;gap:4px;padding:10px 18px 0;}
 .tab{flex:1;padding:9px 4px;border:none;cursor:pointer;background:var(--card);color:var(--t3);border-radius:var(--rs);font-family:var(--f);font-size:.8rem;font-weight:700;box-shadow:var(--sh);transition:all var(--tr);}
 .tab.active{background:linear-gradient(135deg,var(--blue),var(--bl));color:#fff;box-shadow:0 3px 14px var(--bg2);}
-
-/* SECTION CARDS */
 .scard{margin:12px 18px 0;background:var(--card);border-radius:var(--r);padding:16px;box-shadow:var(--sh);border:1px solid var(--bd);}
 .scard-ttl{font-size:.65rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
-.scard-ttl span{font-size:1rem;}
-
-/* SALARY */
 .salary-row{display:flex;gap:10px;align-items:center;}
 .finp{flex:1;padding:11px 13px;background:var(--ib);border:1.5px solid var(--bd);border-radius:11px;color:var(--tx);font-family:var(--f);font-size:.9rem;font-weight:700;outline:none;transition:border-color var(--tr);box-shadow:var(--in);}
 .finp:focus{border-color:var(--bl);}
 .finp::placeholder{color:var(--t3);font-weight:400;}
 .save-btn{padding:11px 18px;background:linear-gradient(135deg,var(--blue),var(--bl));border:none;border-radius:11px;color:#fff;font-family:var(--f);font-weight:800;font-size:.82rem;cursor:pointer;box-shadow:0 2px 10px var(--bg2);transition:all var(--tr);white-space:nowrap;}
-.save-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px var(--bg2);}
-
-/* FIXED EXPENSES */
-.fexp-row{display:grid;grid-template-columns:1fr 120px 36px;gap:6px;align-items:center;margin-bottom:7px;}
-.fexp-row input{padding:9px 11px;background:var(--ib);border:1.5px solid var(--bd);border-radius:10px;color:var(--tx);font-family:var(--f);font-size:.82rem;font-weight:600;outline:none;transition:border-color var(--tr);box-shadow:var(--in);}
+.save-btn:hover{transform:translateY(-1px);}
+.fexp-row{display:grid;grid-template-columns:1fr 110px 36px;gap:6px;align-items:center;margin-bottom:7px;}
+.fexp-row input{padding:9px 11px;background:var(--ib);border:1.5px solid var(--bd);border-radius:10px;color:var(--tx);font-family:var(--f);font-size:.82rem;font-weight:600;outline:none;transition:border-color var(--tr);box-shadow:var(--in);width:100%;}
 .fexp-row input:focus{border-color:var(--bl);}
 .fexp-row input::placeholder{color:var(--t3);font-weight:400;}
-.del-btn{width:36px;height:36px;background:rgba(239,68,68,.1);border:none;border-radius:9px;color:var(--rd);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all var(--tr);}
-.del-btn:hover{background:rgba(239,68,68,.22);}
+.del-btn{width:36px;height:36px;background:rgba(239,68,68,.1);border:none;border-radius:9px;color:var(--rd);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all var(--tr);flex-shrink:0;}
+.del-btn:hover{background:rgba(239,68,68,.25);}
 .add-row-btn{width:100%;padding:9px;background:var(--bg3);border:1.5px dashed var(--bd);border-radius:10px;color:var(--t3);font-family:var(--f);font-size:.78rem;font-weight:700;cursor:pointer;transition:all var(--tr);margin-top:4px;}
 .add-row-btn:hover{border-color:var(--bl);color:var(--bl);}
-
-/* DAILY LOG */
 .day-grid{display:flex;flex-direction:column;gap:5px;}
-.day-row{display:grid;grid-template-columns:80px 1fr;gap:8px;align-items:center;}
+.day-row{display:grid;grid-template-columns:100px 1fr;gap:8px;align-items:center;}
 .day-lbl{font-size:.78rem;font-weight:700;color:var(--t2);}
 .day-lbl.today{color:var(--bl);}
 .day-inp{padding:8px 11px;background:var(--ib);border:1.5px solid var(--bd);border-radius:9px;color:var(--tx);font-family:var(--f);font-size:.82rem;font-weight:700;outline:none;transition:border-color var(--tr);box-shadow:var(--in);width:100%;}
 .day-inp:focus{border-color:var(--bl);}
-.day-inp.has-val{border-color:rgba(37,99,235,.4);}
+.day-inp.has-val{border-color:rgba(37,99,235,.45);}
+.tc{display:none;}.tc.active{display:block;}
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 18px 0;}
+.kpi{background:var(--card);border-radius:var(--rs);padding:14px 14px 12px;box-shadow:var(--sh);border:1px solid var(--bd);}
+.kpi-lbl{font-size:.6rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.kpi-val{font-size:1.45rem;font-weight:900;letter-spacing:-1px;}
+.kpi-val.blue{color:var(--bl);}
+.kpi-val.orange{color:var(--or);}
+.kpi-val.green{color:var(--gn);}
+.kpi-val.red{color:var(--rd);}
+.kpi-val.amber{color:var(--am);}
+.kpi-sub{font-size:.65rem;color:var(--t3);margin-top:3px;}
+.dash-card{margin:12px 18px 0;background:var(--card);border-radius:var(--r);padding:16px;box-shadow:var(--sh);border:1px solid var(--bd);}
+.dash-ttl{font-size:.72rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:13px;}
+.cwrap{position:relative;height:180px;}
+.mtbl{width:100%;border-collapse:collapse;font-size:.73rem;}
+.mtbl th{color:var(--t3);font-weight:700;text-align:right;padding:5px 7px;border-bottom:1px solid var(--bd);white-space:nowrap;}
+.mtbl th:first-child{text-align:left;}
+.mtbl td{padding:7px 7px;border-bottom:1px solid var(--bd);font-weight:500;text-align:right;white-space:nowrap;}
+.mtbl td:first-child{text-align:left;font-weight:700;}
+.mtbl tr:last-child td{border-bottom:none;}
+.mtbl tr:hover td{background:var(--bg3);}
+.tag{display:inline-block;padding:2px 6px;border-radius:5px;font-size:.62rem;font-weight:700;}
+.tag.gn{background:rgba(34,197,94,.15);color:var(--gn);}
+.tag.rd{background:rgba(239,68,68,.15);color:var(--rd);}
+.tag.am{background:rgba(245,158,11,.15);color:var(--am);}
+.overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity var(--tr);}
+.overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--card);border-radius:var(--r) var(--r) 0 0;padding:22px 20px 44px;width:100%;max-width:560px;transform:translateY(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);box-shadow:0 -8px 40px rgba(0,0,0,.3);max-height:85vh;overflow-y:auto;}
+.overlay.open .modal{transform:translateY(0);}
+.mhandle{width:38px;height:4px;border-radius:2px;background:var(--bd);margin:0 auto 16px;}
+.mtitle{font-size:1rem;font-weight:900;margin-bottom:16px;}
+.mf{margin-bottom:13px;}
+.ml{font-size:.7rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;display:block;}
+.mhint{font-size:.67rem;color:var(--t3);margin-top:3px;line-height:1.4;}
+.mhint a{color:var(--bl);text-decoration:none;}
+.mi{width:100%;padding:11px 13px;background:var(--ib);border:1.5px solid var(--bd);border-radius:11px;color:var(--tx);font-family:var(--f);font-size:.88rem;font-weight:600;outline:none;transition:border-color var(--tr);}
+.mi:focus{border-color:var(--bl);}
+.msave{width:100%;padding:13px;background:linear-gradient(135deg,var(--blue),var(--bl));border:none;border-radius:13px;color:#fff;font-family:var(--f);font-size:.9rem;font-weight:900;cursor:pointer;box-shadow:0 4px 18px var(--bg2);transition:all var(--tr);margin-top:4px;}
+.msave:hover{transform:translateY(-2px);}
+.sec{margin-top:16px;padding-top:16px;border-top:1px solid var(--bd);}
+.sec-ttl{font-size:.78rem;font-weight:800;margin-bottom:10px;}
+.sstrow{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.ssb{display:flex;align-items:center;gap:5px;padding:5px 10px;background:var(--bg3);border-radius:8px;font-size:.7rem;font-weight:600;}
+.ssd{width:7px;height:7px;border-radius:50%;background:var(--t3);}
+.ssd.ok{background:var(--gn);}.ssd.err{background:var(--rd);}
+.sbtns{display:flex;gap:7px;}
+.sbtn{flex:1;padding:10px;border:none;border-radius:10px;cursor:pointer;font-family:var(--f);font-weight:700;font-size:.77rem;transition:all var(--tr);}
+.sbtn.push{background:linear-gradient(135deg,var(--blue),var(--bl));color:#fff;}
+.sbtn.pull{background:var(--bg3);color:var(--tx);}
+.sbtn:hover{transform:translateY(-1px);}
+.sbtn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+.iobtns{display:flex;gap:7px;margin-top:10px;}
+.iobtn{flex:1;padding:10px;border:1px solid var(--bd);border-radius:10px;cursor:pointer;font-family:var(--f);font-weight:700;font-size:.74rem;background:var(--bg3);color:var(--tx);transition:all var(--tr);}
+.iobtn:hover{border-color:var(--bl);color:var(--bl);}
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:560px;background:var(--bg);border-top:1px solid var(--bd);padding:8px 18px 18px;display:flex;gap:4px;z-index:200;backdrop-filter:blur(20px);}
+.nbtn{flex:1;padding:9px 4px 7px;border:none;cursor:pointer;background:transparent;color:var(--t3);font-family:var(--f);font-size:.62rem;font-weight:800;border-radius:11px;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all var(--tr);text-transform:uppercase;letter-spacing:.5px;}
+.nbtn .ni{font-size:20px;}
+.nbtn.active{color:var(--bl);}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-70px);background:var(--card);color:var(--tx);border:1px solid var(--bd);padding:10px 18px;border-radius:30px;font-size:.78rem;font-weight:700;box-shadow:0 6px 24px rgba(0,0,0,.3);z-index:999;transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:var(--bl);border-radius:2px;}
+@media(min-width:561px){.app{border-left:1px solid var(--bd);border-right:1px solid var(--bd);}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hdr">
+    <div class="hdr-top">
+      <div class="logo">
+        <div class="logo-ico">$</div>
+        <div class="logo-txt">Spend<b>Log</b></div>
+      </div>
+      <div class="hbtns">
+        <button type="button" class="hbtn" id="syncBtn" title="Cloud Sync">&#9729;<span class="sdot" id="syncDot"></span></button>
+        <button type="button" class="hbtn" id="themeBtn" title="Theme">&#9790;</button>
+      </div>
+    </div>
+    <div class="mnav">
+      <button type="button" class="marr" id="prevMonth">&#8249;</button>
+      <div class="mctr">
+        <div class="mlbl">Viewing</div>
+        <div class="mval" id="monthDisplay">&#8212;</div>
+      </div>
+      <button type="button" class="marr" id="nextMonth">&#8250;</button>
+    </div>
+  </div>
 
-/* TABS CONTENT */
+  <div class="tabs">
+    <button type="button" class="tab active" data-tab="log">&#128203; Log</button>
+    <button type="button" class="tab" data-tab="dashboard">&#128202; Dashboard</button>
+  </div>
+
+  <div class="tc active" id="tc-log">
+    <div class="scard">
+      <div class="scard-ttl">&#128179; Net Salary &mdash; <span id="salaryMonthLabel" style="color:var(--bl);margin-left:4px;"></span></div>
+      <div class="salary-row">
+        <input type="number" class="finp" id="salaryInput" placeholder="e.g. 3200" min="0"/>
+        <button type="button" class="save-btn" id="saveSalary">Save</button>
+      </div>
+    </div>
+
+    <div class="scard">
+      <div class="scard-ttl">&#128204; Fixed Monthly Expenses</div>
+      <div id="fixedRows"></div>
+      <button type="button" class="add-row-btn" id="addFixedRow">+ Add Expense</button>
+      <div style="margin-top:10px;">
+        <button type="button" class="save-btn" id="saveFixed" style="width:100%;">Save Fixed Expenses</button>
+      </div>
+    </div>
+
+    <div class="scard">
+      <div class="scard-ttl">&#128197; Daily Spending</div>
+      <div class="day-grid" id="dayGrid"></div>
+    </div>
+  </div>
+
+  <div class="tc" id="tc-dashboard">
+    <div class="kpi-grid" id="kpiGrid"></div>
+    <div class="dash-card">
+      <div class="dash-ttl">Last 6 Months &mdash; Earned vs Spent vs Saved</div>
+      <div class="cwrap"><canvas id="monthChart"></canvas></div>
+    </div>
+    <div class="dash-card" style="margin-bottom:12px;">
+      <div class="dash-ttl">Monthly Breakdown</div>
+      <div style="overflow-x:auto;">
+        <table class="mtbl">
+          <thead><tr>
+            <th>Month</th><th>Earned</th><th>Fixed</th><th>Variable</th><th>Spent</th><th>Saved</th><th>Rate</th>
+          </tr></thead>
+          <tbody id="monthTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bnav">
+  <button type="button" class="nbtn active" data-tab="log"><span class="ni">&#128203;</span>Log</button>
+  <button type="button" class="nbtn" data-tab="dashboard"><span class="ni">&#128202;</span>Dashboard</button>
+</div>
+
+<div class="overlay" id="syncModal">
+  <div class="modal">
+    <div class="mhandle"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div class="mtitle" style="margin-bottom:0">Cloud Sync</div>
+      <button id="closeSyncBtn" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--t2);line-height:1">&#x2715;</button>
+    </div>
+    <p style="font-size:.77rem;color:var(--t2);margin-bottom:14px;line-height:1.5;">
+      Sync via <strong>GitHub Gist</strong>. Create a token at github.com/settings/tokens with <code>gist</code> scope.
+    </p>
+    <div class="mf"><label class="ml">GitHub Token</label><input type="password" class="mi" id="sToken" placeholder="ghp_..."/></div>
+    <div class="mf">
+      <label class="ml">Gist ID <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--t3)">(auto-created on first push)</span></label>
+      <input type="text" class="mi" id="sGistId" placeholder="Leave empty to create new"/>
+      <div class="mhint">Copy this ID to other devices after first push.</div>
+    </div>
+    <button type="button" class="msave" id="saveSyncCfg">Save Config</button>
+    <div class="sec">
+      <div class="sec-ttl">Sync Now</div>
+      <div class="sstrow">
+        <div class="ssb"><div class="ssd" id="ssDot"></div><span id="ssText">Not configured</span></div>
+        <span style="font-size:.65rem;color:var(--t3);margin-left:auto" id="ssTime"></span>
+      </div>
+      <div class="sbtns">
+        <button type="button" class="sbtn push" id="pushBtn">&#8593; Push</button>
+        <button type="button" class="sbtn pull" id="pullBtn">&#8595; Pull</button>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-ttl">Manual Backup</div>
+      <div class="iobtns">
+        <button type="button" class="iobtn" id="exportBtn">&#8595; Export JSON</button>
+        <button type="button" class="iobtn" id="importBtn">&#8593; Import JSON</button>
+      </div>
+      <input type="file" id="importFile" accept=".json" style="display:none"/>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="tico"></span><span id="tmsg"></span></div>
+
+<script>
+var MONTHS   = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var MONTHS_S = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var DAYS_S   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var GIST_FILE = 'spendlog_data.json';
+var GIST_API  = 'https://api.github.com/gists';
+
+var now = new Date();
+var curY = now.getFullYear();
+var curM = now.getMonth();
+var syncCfg = lsJ('sl_sync') || {token:'',gistId:'',lastSync:''};
+var chartInst = null;
+
+function lsJ(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } }
+function lsS(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+function mKey(y,m){ return 'spending_'+y+'_'+(m+1<10?'0':'')+(m+1); }
+function getMD(y,m){ var d=lsJ(mKey(y,m))||{}; if(!d.salary)d.salary=0; if(!d.daily)d.daily={}; return d; }
+function saveMD(y,m,d){ lsS(mKey(y,m),d); }
+function getFixed(){ return lsJ('sl_fixed')||defFixed(); }
+function saveFixed(a){ lsS('sl_fixed',a); }
+function defFixed(){ return [
+  {name:'Rent',amount:0},{name:'Internet',amount:0},{name:'Insurance',amount:0},
+  {name:'Phone',amount:0},{name:'Streaming',amount:0},{name:'Transport',amount:0},
+  {name:'Gym',amount:0},{name:'Savings Transfer',amount:0},{name:'Other 1',amount:0},{name:'Other 2',amount:0}
+]; }
+
+function fmtE(n){ return '\u20AC'+(Math.round(n||0)).toLocaleString(); }
+function daysIn(y,m){ return new Date(y,m+1,0).getDate(); }
+function todayYMD(){ var d=new Date(); return {y:d.getFullYear(),m:d.getMonth(),day:d.getDate()}; }
+function escH(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function showToast(msg,icon){
+  document.getElementById('tmsg').textContent=msg;
+  document.getElementById('tico').textContent=icon||'';
+  var t=document.getElementById('toast'); t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('show');},2500);
+}
+function openM(id){document.getElementById(id).classList.add('open');}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+
+document.getElementById('prevMonth').addEventListener('click',function(){
+  if(curM===0){curM=11;curY--;}else{curM--;} loadAll();
+});
+document.getElementById('nextMonth').addEventListener('click',function(){
+  if(curM===11){curM=0;curY++;}else{curM++;} loadAll();
+});
+
+function loadAll(){
+  var t=todayYMD();
+  var label=MONTHS[curM]+' '+curY;
+  if(curY===t.y&&curM===t.m) label+=' <span class="cur-pill">Current</span>';
+  document.getElementById('monthDisplay').innerHTML=label;
+  document.getElementById('salaryMonthLabel').textContent=MONTHS_S[curM]+' '+curY;
+  loadSalary(); loadFixed2(); loadDays();
+}
+
+function loadSalary(){
+  var d=getMD(curY,curM);
+  document.getElementById('salaryInput').value=d.salary||'';
+}
+document.getElementById('saveSalary').addEventListener('click',function(){
+  var v=parseFloat(document.getElementById('salaryInput').value)||0;
+  var d=getMD(curY,curM); d.salary=v; saveMD(curY,curM,d);
+  showToast('Salary saved','$');
+});
+
+function loadFixed2(){ renderFixed(getFixed()); }
+function renderFixed(arr){
+  var h='';
+  for(var i=0;i<arr.length;i++){
+    h+='<div class="fexp-row">'
+     +'<input type="text" class="fn" placeholder="Name" value="'+escH(arr[i].name||'')+'" data-i="'+i+'"/>'
+     +'<input type="number" class="fa" placeholder="Amount" value="'+(arr[i].amount||'')+'" min="0" data-i="'+i+'"/>'
+     +'<button type="button" class="del-btn" data-del="'+i+'">&times;</button>'
+     +'</div>';
+  }
+  document.getElementById('fixedRows').innerHTML=h;
+}
+function readFixed(){
+  var ns=document.querySelectorAll('.fn');
+  var as=document.querySelectorAll('.fa');
+  var arr=[];
+  for(var i=0;i<ns.length;i++) arr.push({name:ns[i].value.trim(),amount:parseFloat(as[i].value)||0});
+  return arr;
+}
+document.getElementById('addFixedRow').addEventListener('click',function(){
+  var arr=readFixed(); arr.push({name:'',amount:0}); renderFixed(arr);
+});
+document.getElementById('fixedRows').addEventListener('click',function(e){
+  var b=e.target.closest('[data-del]');
+  if(!b) return;
+  var arr=readFixed(); arr.splice(parseInt(b.dataset.del),1); renderFixed(arr);
+});
+document.getElementById('saveFixed').addEventListener('click',function(){
+  saveFixed(readFixed()); showToast('Fixed expenses saved','OK');
+});
+
+function loadDays(){
+  var days=daysIn(curY,curM);
+  var d=getMD(curY,curM);
+  var t=todayYMD();
+  var h='';
+  for(var day=1;day<=days;day++){
+    var k=(day<10?'0':'')+day;
+    var v=d.daily[k]||'';
+    var dt=new Date(curY,curM,day);
+    var dow=DAYS_S[dt.getDay()];
+    var lbl=dow+' '+MONTHS_S[curM]+' '+day;
+    var isToday=(t.y===curY&&t.m===curM&&t.day===day);
+    var hv=v>0?' has-val':'';
+    h+='<div class="day-row">'
+      +'<div class="day-lbl'+(isToday?' today':'')+'">'+lbl+'</div>'
+      +'<input type="number" class="day-inp'+hv+'" data-day="'+k+'" value="'+(v||'')+'" placeholder="0" min="0"/>'
+      +'</div>';
+  }
+  document.getElementById('dayGrid').innerHTML=h;
+}
+document.getElementById('dayGrid').addEventListener('input',function(e){
+  var inp=e.target.closest('.day-inp'); if(!inp) return;
+  var v=parseFloat(inp.value)||0;
+  var d=getMD(curY,curM);
+  if(v>0){d.daily[inp.dataset.day]=v;inp.classList.add('has-val');}
+  else{delete d.daily[inp.dataset.day];inp.classList.remove('has-val');}
+  saveMD(curY,curM,d);
+});
+
+function compute(y,m){
+  var d=getMD(y,m);
+  var fx=getFixed();
+  var sal=d.salary||0;
+  var totFx=0; for(var i=0;i<fx.length;i++) totFx+=fx[i].amount||0;
+  var totVar=0; var dv=d.daily||{}; var dk=Object.keys(dv);
+  for(var j=0;j<dk.length;j++) totVar+=parseFloat(dv[dk[j]])||0;
+  var spent=totFx+totVar;
+  var saved=sal-spent;
+  var rate=sal>0?(saved/sal)*100:0;
+  return {salary:sal,fixed:totFx,variable:totVar,spent:spent,saved:saved,rate:rate};
+}
+
+function renderDash(){
+  var c=compute(curY,curM);
+  var varCol=(c.salary>0&&c.variable>(c.salary-c.fixed))?'red':'green';
+  var savedCol=c.saved>=0?'green':'red';
+  var rateCol=c.rate>=20?'green':c.rate>=10?'amber':'red';
+  var rateNote=c.rate>=20?'Great':c.rate>=10?'Average':'Low';
+  document.getElementById('kpiGrid').innerHTML=
+    kpi('Net Salary',fmtE(c.salary),'blue',MONTHS_S[curM]+' '+curY)+
+    kpi('Fixed Expenses',fmtE(c.fixed),'orange','Recurring')+
+    kpi('Variable Spending',fmtE(c.variable),varCol,'Daily total')+
+    kpi('Total Saved',fmtE(c.saved),savedCol,'Earned minus all')+
+    kpi('Savings Rate',c.rate.toFixed(1)+'%',rateCol,rateNote);
+
+  var labels=[],earnA=[],spentA=[],savedA=[],rows='';
+  for(var i=5;i>=0;i--){
+    var y2=curY, m2=curM-i;
+    while(m2<0){m2+=12;y2--;}
+    var cc=compute(y2,m2);
+    labels.push(MONTHS_S[m2]+' '+y2);
+    earnA.push(cc.salary); spentA.push(cc.spent); savedA.push(cc.saved);
+    var sc=cc.saved>=0?'gn':'rd';
+    var rc=cc.rate>=20?'gn':cc.rate>=10?'am':'rd';
+    rows+='<tr>'
+      +'<td>'+MONTHS_S[m2]+' '+y2+'</td>'
+      +'<td>'+fmtE(cc.salary)+'</td>'
+      +'<td>'+fmtE(cc.fixed)+'</td>'
+      +'<td>'+fmtE(cc.variable)+'</td>'
+      +'<td>'+fmtE(cc.spent)+'</td>'
+      +'<td><span class="tag '+sc+'">'+fmtE(cc.saved)+'</span></td>'
+      +'<td><span class="tag '+rc+'">'+cc.rate.toFixed(1)+'%</span></td>'
+      +'</tr>';
+  }
+  document.getElementById('monthTbody').innerHTML=rows;
+
+  var isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  var gc=isDark?'rgba(255,255,255,0.05)':'rgba(0,0,0,0.05)';
+  var tc=isDark?'#6b7694':'#8896aa';
+  if(chartInst) chartInst.destroy();
+  chartInst=new Chart(document.getElementById('monthChart'),{
+    type:'bar',
+    data:{labels:labels,datasets:[
+      {label:'Earned',data:earnA,backgroundColor:'rgba(59,130,246,0.75)',borderColor:'#3b82f6',borderWidth:2,borderRadius:5},
+      {label:'Spent', data:spentA,backgroundColor:'rgba(239,68,68,0.65)',borderColor:'#ef4444',borderWidth:2,borderRadius:5},
+      {label:'Saved', data:savedA.map(function(v){return v<0?0:v;}),backgroundColor:'rgba(34,197,94,0.7)',borderColor:'#22c55e',borderWidth:2,borderRadius:5}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,labels:{color:tc,font:{size:10},boxWidth:12,padding:10}},
+        tooltip:{backgroundColor:'rgba(14,17,23,0.92)',titleColor:'#fff',bodyColor:'#e8eaf0',cornerRadius:10,padding:10}},
+      scales:{
+        x:{grid:{color:gc},ticks:{color:tc,font:{size:10}}},
+        y:{grid:{color:gc},ticks:{color:tc,font:{size:10},callback:function(v){return '\u20AC'+v.toLocaleString();}}}
+      }
+    }
+  });
+}
+function kpi(lbl,val,cls,sub){
+  return '<div class="kpi"><div class="kpi-lbl">'+lbl+'</div><div class="kpi-val '+cls+'">'+val+'</div><div class="kpi-sub">'+sub+'</div></div>';
+}
+
+var allTabs=document.querySelectorAll('.tab,.nbtn');
+for(var ti=0;ti<allTabs.length;ti++){
+  allTabs[ti].addEventListener('click',(function(b){
+    return function(){
+      var tab=b.dataset.tab;
+      var tabs=document.querySelectorAll('.tab');
+      for(var i=0;i<tabs.length;i++) tabs[i].classList.toggle('active',tabs[i].dataset.tab===tab);
+      var nbs=document.querySelectorAll('.nbtn');
+      for(var i=0;i<nbs.length;i++) nbs[i].classList.toggle('active',nbs[i].dataset.tab===tab);
+      var tcs=document.querySelectorAll('.tc');
+      for(var i=0;i<tcs.length;i++) tcs[i].classList.toggle('active',tcs[i].id==='tc-'+tab);
+      if(tab==='dashboard') renderDash();
+    };
+  })(allTabs[ti]));
+}
+
+document.getElementById('themeBtn').addEventListener('click',function(){
+  var dk=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',dk?'light':'dark');
+  this.textContent=dk?'&#9728;':'&#9790;';
+  if(document.getElementById('tc-dashboard').classList.contains('active')) renderDash();
+});
+
+document.getElementById('syncBtn').addEventListener('click',function(){
+  document.getElementById('sToken').value=syncCfg.token||'';
+  document.getElementById('sGistId').value=syncCfg.gistId||'';
+  updateSyncUI(); openM('syncModal');
+});
+document.getElementById('closeSyncBtn').addEventListener('click',function(){ closeM('syncModal'); });
+document.getElementById('syncModal').addEventListener('click',function(e){ if(e.target===this) closeM('syncModal'); });
+document.getElementById('saveSyncCfg').addEventListener('click',function(){
+  syncCfg.token=document.getElementById('sToken').value.trim();
+  syncCfg.gistId=document.getElementById('sGistId').value.trim();
+  lsS('sl_sync',syncCfg); updateSyncUI(); showToast('Config saved','OK');
+});
+
+function fullData(){
+  var data={fixed:getFixed(),months:{}};
+  var keys=Object.keys(localStorage);
+  for(var i=0;i<keys.length;i++){
+    if(keys[i].indexOf('spending_')===0) data.months[keys[i]]=lsJ(keys[i]);
+  }
+  return data;
+}
+function applyData(data){
+  if(data.fixed) saveFixed(data.fixed);
+  if(data.months){
+    var mk=Object.keys(data.months);
+    for(var i=0;i<mk.length;i++) lsS(mk[i],data.months[mk[i]]);
+  }
+}
+function mergeData(local,remote){
+  var merged={fixed:local.fixed,months:{}};
+  var all={};
+  var rk=Object.keys(remote.months||{}); for(var i=0;i<rk.length;i++) all[rk[i]]=1;
+  var lk=Object.keys(local.months||{});  for(var i=0;i<lk.length;i++) all[lk[i]]=1;
+  var ak=Object.keys(all);
+  for(var i=0;i<ak.length;i++){
+    var k=ak[i], l=local.months[k], r=remote.months[k];
+    if(l&&r) merged.months[k]={salary:l.salary||r.salary,daily:Object.assign({},r.daily||{},l.daily||{})};
+    else merged.months[k]=l||r;
+  }
+  return merged;
+}
+function updateSyncUI(){
+  var dot=document.getElementById('syncDot'),sd=document.getElementById('ssDot');
+  var st=document.getElementById('ssText'),sl=document.getElementById('ssTime');
+  if(!syncCfg.token){dot.className='sdot';sd.className='ssd';st.textContent='Not configured';}
+  else if(syncCfg.gistId){dot.className='sdot on';sd.className='ssd ok';st.textContent='Configured';sl.textContent=syncCfg.lastSync?'Last: '+syncCfg.lastSync:'';}
+  else{dot.className='sdot on';sd.className='ssd';st.textContent='Token set, no Gist yet';}
+}
+function doSync(push){
+  var pb=document.getElementById('pushBtn'),plb=document.getElementById('pullBtn');
+  pb.disabled=true;plb.disabled=true;
+  document.getElementById('syncDot').className='sdot spin on';
+  var hdrs={'Authorization':'token '+syncCfg.token,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'};
+  if(push){
+    pb.textContent='Pushing...';
+    var doPush=function(payload){
+      var fileObj={};
+      fileObj[GIST_FILE]={content:JSON.stringify(payload,null,2)};
+      var body=JSON.stringify({description:'SpendLog',public:false,files:fileObj});
+      var url=syncCfg.gistId?GIST_API+'/'+syncCfg.gistId:GIST_API;
+      var method=syncCfg.gistId?'PATCH':'POST';
+      fetch(url,{method:method,headers:hdrs,body:body})
+        .then(function(r){return r.json();})
+        .then(function(res){
+          if(res.id&&!syncCfg.gistId){syncCfg.gistId=res.id;document.getElementById('sGistId').value=res.id;}
+          syncCfg.lastSync=new Date().toLocaleTimeString();lsS('sl_sync',syncCfg);updateSyncUI();
+          document.getElementById('syncDot').className='sdot on';showToast('Pushed to Gist','OK');
+        })
+        .catch(function(){document.getElementById('syncDot').className='sdot err on';showToast('Push failed','ERR');})
+        .finally(function(){pb.disabled=false;plb.disabled=false;pb.textContent='&#8593; Push';});
+    };
+    if(syncCfg.gistId){
+      fetch(GIST_API+'/'+syncCfg.gistId,{headers:hdrs})
+        .then(function(r){return r.json();})
+        .then(function(res){
+          var rc=res.files&&res.files[GIST_FILE]?JSON.parse(res.files[GIST_FILE].content):{months:{}};
+          doPush(mergeData(fullData(),rc));
+        }).catch(function(){doPush(fullData());});
+    } else { doPush(fullData()); }
+  } else {
+    if(!syncCfg.gistId){showToast('Set Gist ID first','!');pb.disabled=false;plb.disabled=false;return;}
+    plb.textContent='Pulling...';
+    fetch(GIST_API+'/'+syncCfg.gistId,{headers:hdrs})
+      .then(function(r){return r.json();})
+      .then(function(res){
+        var rc=res.files&&res.files[GIST_FILE]?JSON.parse(res.files[GIST_FILE].content):{months:{}};
+        applyData(rc);loadAll();
+        syncCfg.lastSync=new Date().toLocaleTimeString();lsS('sl_sync',syncCfg);updateSyncUI();
+        document.getElementById('syncDot').className='sdot on';showToast('Pulled from Gist','OK');
+      })
+      .catch(function(){document.getElementById('syncDot').className='sdot err on';showToast('Pull failed','ERR');})
+      .finally(function(){pb.disabled=false;plb.disabled=false;plb.textContent='&#8595; Pull';});
+  }
+}
+document.getElementById('pushBtn').addEventListener('click',function(){doSync(true);});
+document.getElementById('pullBtn').addEventListener('click',function(){doSync(false);});
+document.getElementById('exportBtn').addEventListener('click',function(){
+  var b=new Blob([JSON.stringify(fullData(),null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(b);
+  a.download='spendlog-'+new Date().toISOString().split('T')[0]+'.json';a.click();
+  showToast('Exported','OK');
+});
+document.getElementById('importBtn').addEventListener('click',function(){document.getElementById('importFile').click();});
+document.getElementById('importFile').addEventListener('change',function(e){
+  if(!e.target.files[0]) return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    try{applyData(JSON.parse(ev.target.result));loadAll();showToast('Imported','OK');}
+    catch(err){showToast('Invalid file','ERR');}
+  };
+  r.readAsText(e.target.files[0]);e.target.value='';
+});
+
+loadAll();
+updateSyncUI();
+</script>
+</body>
+</html>
