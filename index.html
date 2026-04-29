@@ -463,7 +463,77 @@ function renderDash(){
     }
   });
 }
-function renderYear(){   var y=curY;   var now=new Date();   var maxM=(y===now.getFullYear())?now.getMonth():11;   var labels=[],earnA=[],spentA=[],savedA=[];   var totSal=0,totFx=0,totVar=0;   for(var m=0;m<=maxM;m++){     var c=compute(y,m);     labels.push(MONTHS_S[m]);     earnA.push(c.salary); spentA.push(c.spent); savedA.push(c.saved);     totSal+=c.salary; totFx+=c.fixed; totVar+=c.variable;   }   var totSpent=totFx+totVar;   var totSaved=totSal-totSpent;   var totRate=totSal>0?(totSaved/totSal)*100:0;   var savedCol=totSaved>=0?'green':'red';   var rateCol=totRate>=20?'green':totRate>=10?'amber':'red';   var rateNote=totRate>=20?'Great':totRate>=10?'Average':'Low';   document.getElementById('yearKpiGrid').innerHTML=     kpi('Net Salary',fmtE(totSal),'blue','Full year '+y)+     kpi('Fixed Expenses',fmtE(totFx),'orange','Total fixed')+     kpi('Variable Spending',fmtE(totVar),'orange','Total variable')+     kpi('Total Saved',fmtE(totSaved),savedCol,'Salary - All')+     kpi('Savings Rate',totRate.toFixed(1)+'%',rateCol,rateNote);   document.getElementById('yearChartTitle').textContent=y+' — Monthly Overview';   var isDark=document.documentElement.getAttribute('data-theme')==='dark';   var gc=isDark?'rgba(255,255,255,0.05)':'rgba(0,0,0,0.05)';   var tc=isDark?'#6b7694':'#8896aa';   if(window.yearChartInst) window.yearChartInst.destroy();   window.yearChartInst=new Chart(document.getElementById('yearChart'),{     type:'bar',     data:{labels:labels,datasets:[       {label:'Earned',data:earnA,backgroundColor:'rgba(59,130,246,0.75)',borderColor:'#3b82f6',borderWidth:2,borderRadius:5},       {label:'Spent', data:spentA,backgroundColor:'rgba(239,68,68,0.65)',borderColor:'#ef4444',borderWidth:2,borderRadius:5},       {label:'Saved', data:savedA.map(function(v){return v<0?0:v;}),backgroundColor:'rgba(34,197,94,0.7)',borderColor:'#22c55e',borderWidth:2,borderRadius:5}     ]},     options:{responsive:true,maintainAspectRatio:false,       plugins:{legend:{display:true,labels:{color:tc,font:{size:10},boxWidth:12,padding:10}},         tooltip:{backgroundColor:'rgba(14,17,23,0.92)',titleColor:'#fff',bodyColor:'#e8eaf0',cornerRadius:10,padding:10}},       scales:{         x:{grid:{color:gc},ticks:{color:tc,font:{size:10}}},         y:{grid:{color:gc},ticks:{color:tc,font:{size:10},callback:function(v){return '\u20AC'+v.toLocaleString();}}}       }     }   }); } function kpi(lbl,val,cls,sub){
+function renderYear(){
+  var y = curY;
+  var now = new Date();
+  var maxM = (now.getFullYear() === y) ? now.getMonth() : 11;
+  var labels = [], earnA = [], spentA = [], savedA = [];
+  var totSal = 0, totFx = 0, totVar = 0;
+
+  // Get current category spending for the 'bridge'
+  var catTotals = lsJ('sl_cats') || {};
+  var currentVar = Object.values(catTotals).reduce(function(a,b){ return a+b; }, 0);
+
+  for(var m = 0; m <= maxM; m++){
+    var c = compute(y, m);
+    
+    // Bridge: If this is the current month, override with new cat total
+    if(m === now.getMonth() && y === now.getFullYear()) {
+        c.variable = currentVar;
+        c.spent = c.fixed + c.variable;
+        c.saved = c.salary - c.spent;
+    }
+    
+    labels.push(MONTHS_S[m]);
+    earnA.push(c.salary); 
+    spentA.push(c.spent); 
+    savedA.push(c.saved);
+    
+    totSal += c.salary;
+    totFx += c.fixed;
+    totVar += c.variable;
+  }
+
+  var totSpent = totFx + totVar;
+  var totSaved = totSal - totSpent;
+  var totRate = totSal > 0 ? (totSaved / totSal) * 100 : 0;
+
+  var savedCol = totSaved >= 0 ? 'green' : 'red';
+  var rateCol = totRate >= 20 ? 'green' : totRate >= 10 ? 'amber' : 'red';
+  var rateNote = totRate >= 20 ? 'Great' : totRate >= 10 ? 'Average' : 'Low';
+
+  document.getElementById('yearKpiGrid').innerHTML = 
+    kpi('Net Salary', fmtE(totSal), 'blue', 'Full year ' + y) +
+    kpi('Fixed Expenses', fmtE(totFx), 'orange', 'Total fixed') +
+    kpi('Variable Spending', fmtE(totVar), 'orange', 'Total variable') +
+    kpi('Total Saved', fmtE(totSaved), savedCol, 'Salary - All') +
+    kpi('Savings Rate', totRate.toFixed(1) + '%', rateCol, rateNote);
+
+  document.getElementById('yearChartTitle').textContent = y + ' Monthly Overview';
+
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  var gc = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+  var tc = isDark ? '#6b7694' : '#8896aa';
+  
+  if(window.yearChartInst) window.yearChartInst.destroy();
+  window.yearChartInst = new Chart(document.getElementById('yearChart'), {
+    type: 'bar',
+    data: { labels: labels, datasets: [
+      { label: 'Earned', data: earnA, backgroundColor: 'rgba(59,130,246,0.75)', borderColor: '#3b82f6', borderWidth: 2, borderRadius: 5 },
+      { label: 'Spent', data: spentA, backgroundColor: 'rgba(239,68,68,0.65)', borderColor: '#ef4444', borderWidth: 2, borderRadius: 5 },
+      { label: 'Saved', data: savedA.map(function(v){ return v < 0 ? 0 : v; }), backgroundColor: 'rgba(34,197,94,0.7)', borderColor: '#22c55e', borderWidth: 2, borderRadius: 5 }
+    ]},
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: true, labels: { color: tc, font: { size: 10 }, boxWidth: 12, padding: 10 } },
+        tooltip: { backgroundColor: 'rgba(14,17,23,0.92)', titleColor: '#fff', bodyColor: '#e8eaf0', cornerRadius: 10, padding: 10 } },
+      scales: {
+        x: { grid: { color: gc }, ticks: { color: tc, font: { size: 10 } } },
+        y: { grid: { color: gc }, ticks: { color: tc, font: { size: 10 }, callback: function(v){ return '\u20AC' + v.toLocaleString(); } } }
+      }
+    }
+  });
+}
+  function kpi(lbl,val,cls,sub){
   return '<div class="kpi"><div class="kpi-lbl">'+lbl+'</div><div class="kpi-val '+cls+'">'+val+'</div><div class="kpi-sub">'+sub+'</div></div>';
 }
 
