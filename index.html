@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SpendLog</title>
+<title>Floussi</title>
 <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700,800,900&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
@@ -146,7 +146,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
     <div class="hdr-top">
       <div class="logo">
         <div class="logo-ico">$</div>
-        <div class="logo-txt">Spend<b>Log</b></div>
+        <div class="logo-txt">Flou<b>ssi</b></div>
       </div>
       <div class="hbtns">
         <button type="button" class="hbtn" id="syncBtn" title="Cloud Sync">&#9729;<span class="sdot" id="syncDot"></span></button>
@@ -535,7 +535,7 @@ function doSync(push){
     var doPush=function(payload){
       var fileObj={};
       fileObj[GIST_FILE]={content:JSON.stringify(payload,null,2)};
-      var body=JSON.stringify({description:'SpendLog',public:false,files:fileObj});
+      var body=JSON.stringify({description:'Floussi',public:false,files:fileObj});
       var url=syncCfg.gistId?GIST_API+'/'+syncCfg.gistId:GIST_API;
       var method=syncCfg.gistId?'PATCH':'POST';
       fetch(url,{method:method,headers:hdrs,body:body})
