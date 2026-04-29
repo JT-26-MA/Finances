@@ -186,10 +186,21 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
     </div>
 
     <div class="scard">
-      <div class="scard-ttl">&#128197; Daily Spending</div>
-      <div class="day-grid" id="dayGrid"></div>
-    </div>
+      <div class="scard-ttl">&#128197; 💰 Variable Expenses</div>
+  <div id="catList" class="day-grid"></div>
+  <div class="frow" style="margin-top:10px; display:flex; gap:6px;">
+    <select class="finp" id="newCat">
+      <option value="Food">Food</option>
+      <option value="Transport">Transport</option>
+      <option value="Shopping">Shopping</option>
+      <option value="Fun">Fun</option>
+      <option value="Health">Health</option>
+      <option value="Other">Other</option>
+    </select>
+    <input type="number" class="finp" id="newAmt" placeholder="Amount"/>
+    <button type="button" class="save-btn" id="addCat">Add</button>
   </div>
+</div>
 
   <div class="tc" id="tc-year">   <div class="kpi-grid" id="yearKpiGrid"></div>   <div class="dash-card" style="margin-bottom:12px;">     <div class="dash-ttl" id="yearChartTitle">Year Overview</div>     <div class="cwrap"><canvas id="yearChart"></canvas></div>   </div> </div> <div class="tc" id="tc-dashboard">
     <div class="kpi-grid" id="kpiGrid"></div>
