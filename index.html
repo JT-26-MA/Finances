@@ -578,7 +578,14 @@ document.getElementById('importFile').addEventListener('change',function(e){
   };
   r.readAsText(e.target.files[0]);e.target.value='';
 });
-
+document.getElementById('salaryInput').addEventListener('input', function(){
+  var v = parseFloat(this.value) || 0;
+  var d = getMD(curY, curM); 
+  d.salary = v; 
+  saveMD(curY, curM, d);
+  // Optional: show a quick feedback toast if you want
+  // showToast('Salary autosaved', '💾');
+});
 loadAll();
 updateSyncUI();
 </script>
