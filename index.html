@@ -300,9 +300,11 @@ function closeM(id){document.getElementById(id).classList.remove('open');}
 
 document.getElementById('prevMonth').addEventListener('click',function(){
   if(curM===0){curM=11;curY--;}else{curM--;} loadAll();
+  if(document.getElementById('tc-dashboard').classList.contains('active')) renderDash();
 });
 document.getElementById('nextMonth').addEventListener('click',function(){
   if(curM===11){curM=0;curY++;}else{curM++;} loadAll();
+  if(document.getElementById('tc-dashboard').classList.contains('active')) renderDash();
 });
 
 function loadAll(){
