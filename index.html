@@ -371,19 +371,7 @@ document.getElementById('fixedRows').addEventListener('input',function(e){
 });
 
 
-document.getElementById('dayGrid').addEventListener('input',function(e){
-  var inp=e.target.closest('.day-inp'); if(!inp) return;
-  var v=parseFloat(inp.value)||0;
-  var d=getMD(curY,curM);
-  if(inp.value !== ""){
-    d.daily[inp.dataset.day] = v;
-    inp.classList.add('has-val');
-  } else {
-    delete d.daily[inp.dataset.day];
-    inp.classList.remove('has-val');
-  }
-  saveMD(curY,curM,d);
-});
+
 
 function compute(y,m){
   var d=getMD(y,m);
