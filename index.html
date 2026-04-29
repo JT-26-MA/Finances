@@ -398,6 +398,7 @@ function compute(y,m){
 }
 
 function renderDash(){
+  var tdy=todayYMD();
   var c=compute(curY,curM);
   var varCol=(c.salary>0&&c.variable>(c.salary-c.fixed))?'red':'green';
   var savedCol=c.saved>=0?'green':'red';
