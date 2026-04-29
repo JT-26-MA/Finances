@@ -218,14 +218,13 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
       <div class="mtitle" style="margin-bottom:0">Cloud Sync</div>
       <button id="closeSyncBtn" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--t2);line-height:1">&#x2715;</button>
     </div>
-    <p style="font-size:.77rem;color:var(--t2);margin-bottom:14px;line-height:1.5;">
-      Sync via <strong>GitHub Gist</strong>. Create a token at github.com/settings/tokens with <code>gist</code> scope.
+       <p style="font-size:.77rem;color:var(--t2);margin-bottom:14px;line-height:1.5;">
+      Sync via <strong>JSONBin.io</strong>. Get your API Key at jsonbin.io.
     </p>
-    <div class="mf"><label class="ml">GitHub Token</label><input type="password" class="mi" id="sToken" placeholder="ghp_..."/></div>
+    <div class="mf"><label class="ml">Master Key</label><input type="password" class="mi" id="sToken" placeholder="$2a$10$..."/></div>
     <div class="mf">
-      <label class="ml">Gist ID <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--t3)">(auto-created on first push)</span></label>
+      <label class="ml">Bin ID <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--t3)">(auto-created on first push)</span></label>
       <input type="text" class="mi" id="sGistId" placeholder="Leave empty to create new"/>
-      <div class="mhint">Copy this ID to other devices after first push.</div>
     </div>
     <button type="button" class="msave" id="saveSyncCfg">Save Config</button>
     <div class="sec">
@@ -531,46 +530,35 @@ function doSync(push){
   var pb=document.getElementById('pushBtn'),plb=document.getElementById('pullBtn');
   pb.disabled=true;plb.disabled=true;
   document.getElementById('syncDot').className='sdot spin on';
-  var hdrs={'Authorization':'token '+syncCfg.token,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'};
+  var hdrs={'Content-Type':'application/json','X-Master-Key':syncCfg.token};
   if(push){
     pb.textContent='Pushing...';
     var doPush=function(payload){
-      var fileObj={};
-      fileObj[GIST_FILE]={content:JSON.stringify(payload,null,2)};
-      var body=JSON.stringify({description:'Floussi',public:false,files:fileObj});
-      var url=syncCfg.gistId?GIST_API+'/'+syncCfg.gistId:GIST_API;
-      var method=syncCfg.gistId?'PATCH':'POST';
-      fetch(url,{method:method,headers:hdrs,body:body})
+      var url=syncCfg.gistId?'https://api.jsonbin.io/v3/b/'+syncCfg.gistId:'https://api.jsonbin.io/v3/b';
+      var method=syncCfg.gistId?'PUT':'POST';
+      fetch(url,{method:method,headers:hdrs,body:JSON.stringify(payload)})
         .then(function(r){return r.json();})
         .then(function(res){
-          if(res.id&&!syncCfg.gistId){syncCfg.gistId=res.id;document.getElementById('sGistId').value=res.id;}
+          if(res.metadata&&res.metadata.id&&!syncCfg.gistId){syncCfg.gistId=res.metadata.id;document.getElementById('sGistId').value=res.metadata.id;}
           syncCfg.lastSync=new Date().toLocaleTimeString();lsS('sl_sync',syncCfg);updateSyncUI();
-          document.getElementById('syncDot').className='sdot on';showToast('Pushed to Gist','OK');
+          document.getElementById('syncDot').className='sdot on';showToast('Pushed to Cloud','OK');
         })
         .catch(function(){document.getElementById('syncDot').className='sdot err on';showToast('Push failed','ERR');})
-        .finally(function(){pb.disabled=false;plb.disabled=false;pb.textContent='&#8593; Push';});
+        .finally(function(){pb.disabled=false;plb.disabled=false;pb.textContent='↑ Push';});
     };
-    if(syncCfg.gistId){
-      fetch(GIST_API+'/'+syncCfg.gistId,{headers:hdrs})
-        .then(function(r){return r.json();})
-        .then(function(res){
-          var rc=res.files&&res.files[GIST_FILE]?JSON.parse(res.files[GIST_FILE].content):{months:{}};
-          doPush(mergeData(fullData(),rc));
-        }).catch(function(){doPush(fullData());});
-    } else { doPush(fullData()); }
+    doPush(fullData());
   } else {
-    if(!syncCfg.gistId){showToast('Set Gist ID first','!');pb.disabled=false;plb.disabled=false;return;}
+    if(!syncCfg.gistId){showToast('Set Bin ID first','!');pb.disabled=false;plb.disabled=false;return;}
     plb.textContent='Pulling...';
-    fetch(GIST_API+'/'+syncCfg.gistId,{headers:hdrs})
+    fetch('https://api.jsonbin.io/v3/b/'+syncCfg.gistId+'/latest',{headers:hdrs})
       .then(function(r){return r.json();})
       .then(function(res){
-        var rc=res.files&&res.files[GIST_FILE]?JSON.parse(res.files[GIST_FILE].content):{months:{}};
-        applyData(rc);loadAll();
-        syncCfg.lastSync=new Date().toLocaleTimeString();lsS('sl_sync',syncCfg);updateSyncUI();
-        document.getElementById('syncDot').className='sdot on';showToast('Pulled from Gist','OK');
+        applyData(res.record); loadAll();
+        syncCfg.lastSync=new Date().toLocaleTimeString(); lsS('sl_sync',syncCfg); updateSyncUI();
+        document.getElementById('syncDot').className='sdot on'; showToast('Pulled from Cloud','OK');
       })
       .catch(function(){document.getElementById('syncDot').className='sdot err on';showToast('Pull failed','ERR');})
-      .finally(function(){pb.disabled=false;plb.disabled=false;plb.textContent='&#8595; Pull';});
+      .finally(function(){pb.disabled=false;plb.disabled=false;plb.textContent='↓ Pull';});
   }
 }
 document.getElementById('pushBtn').addEventListener('click',function(){doSync(true);});
