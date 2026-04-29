@@ -30,6 +30,7 @@
 html,body{min-height:100vh;}
 body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:background .3s,color .3s;overflow-x:hidden;}
 .app{max-width:960px;margin:0 auto;padding-bottom:20px;}
+.save-btn#saveSalary { display: none; }
 .hdr{position:sticky;top:0;z-index:100;background:var(--bg);padding:14px 18px 10px;border-bottom:1px solid var(--bd);backdrop-filter:blur(20px);}
 .hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .logo{display:flex;align-items:center;gap:8px;}
@@ -173,6 +174,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
       <div class="scard-ttl">&#128179; Net Salary &mdash; <span id="salaryMonthLabel" style="color:var(--bl);margin-left:4px;"></span></div>
       <div class="salary-row">
         <input type="number" class="finp" id="salaryInput" placeholder="e.g. 3200" min="0"/>
+        <button type="button" class="save-btn" id="saveSalary">Save</button>
       </div>
     </div>
 
