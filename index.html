@@ -181,9 +181,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
       <div class="scard-ttl">&#128204; Fixed Monthly Expenses</div>
       <div id="fixedRows"></div>
       <button type="button" class="add-row-btn" id="addFixedRow">+ Add Expense</button>
-      <div style="margin-top:10px;">
-        <button type="button" class="save-btn" id="saveFixed" style="width:100%;">Save Fixed Expenses</button>
-      </div>
+      
     </div>
 
     <div class="scard">
@@ -347,10 +345,10 @@ document.getElementById('addFixedRow').addEventListener('click',function(){
 document.getElementById('fixedRows').addEventListener('click',function(e){
   var b=e.target.closest('[data-del]');
   if(!b) return;
-  var arr=readFixed(); arr.splice(parseInt(b.dataset.del),1); renderFixed(arr);
+  var arr=readFixed(); arr.splice(parseInt(b.dataset.del),1); renderFixed(arr); saveFixed(arr);
 });
-document.getElementById('saveFixed').addEventListener('click',function(){
-  saveFixed(readFixed()); showToast('Fixed expenses saved','OK');
+document.getElementById('fixedRows').addEventListener('input',function(e){
+  if(e.target.closest('.fn')||e.target.closest('.fa')) saveFixed(readFixed());
 });
 
 function loadDays(){
