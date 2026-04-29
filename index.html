@@ -276,6 +276,10 @@ var curM = now.getMonth();
 var syncCfg = lsJ('sl_sync') || {token:'',gistId:'',lastSync:''};
 var chartInst = null;
 
+function computeFromCats(){
+  var catTotals = lsJ('sl_cats') || {};
+  return Object.values(catTotals).reduce(function(a,b){ return a+b; }, 0);
+}  
 function lsJ(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } }
 function lsS(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
 function mKey(y,m){ return 'spending_'+y+'_'+(m+1<10?'0':'')+(m+1); }
@@ -387,56 +391,74 @@ function compute(y,m){
 }
 
 function renderDash(){
-  var tdy=todayYMD();
-  var c=compute(curY,curM);
-  var varCol=(c.salary>0&&c.variable>(c.salary-c.fixed))?'red':'green';
-  var savedCol=c.saved>=0?'green':'red';
-  var rateCol=c.rate>=20?'green':c.rate>=10?'amber':'red';
-  var rateNote=c.rate>=20?'Great':c.rate>=10?'Average':'Low';
-  document.getElementById('kpiGrid').innerHTML=
-    kpi('Net Salary',fmtE(c.salary),'blue',MONTHS_S[curM]+' '+curY)+
-    kpi('Fixed Expenses',fmtE(c.fixed),'orange','Recurring')+
-    kpi('Variable Spending',fmtE(c.variable),varCol,'Daily total')+
-    kpi('Total Saved',fmtE(c.saved),savedCol,'Earned minus all')+
-    kpi('Savings Rate',c.rate.toFixed(1)+'%',rateCol,rateNote);
+  var tdy = todayYMD();
+  // Get variable spending from the new cat system
+  var catTotals = lsJ('sl_cats') || {};
+  var currentVar = Object.values(catTotals).reduce(function(a,b){ return a+b; }, 0);
+  
+  var c = compute(curY, curM);
+  // Override the variable spending with our calculated cat total
+  c.variable = currentVar;
+  c.spent = c.fixed + c.variable;
+  c.saved = c.salary - c.spent;
+  c.rate = c.salary > 0 ? (c.saved / c.salary) * 100 : 0;
 
-  var labels=[],earnA=[],spentA=[],savedA=[],rows='';
-  for(var i=0;i<=tdy.m;i++){
-    var y2=tdy.y, m2=i;
-    var cc=compute(y2,m2);
-    labels.push(MONTHS_S[m2]+' '+y2);
+  var varCol = (c.salary > 0 && c.variable > (c.salary - c.fixed)) ? 'red' : 'green';
+  var savedCol = c.saved >= 0 ? 'green' : 'red';
+  var rateCol = c.rate >= 20 ? 'green' : c.rate >= 10 ? 'amber' : 'red';
+  var rateNote = c.rate >= 20 ? 'Great' : c.rate >= 10 ? 'Average' : 'Low';
+
+  document.getElementById('kpiGrid').innerHTML =
+    kpi('Net Salary', fmtE(c.salary), 'blue', MONTHS_S[curM] + ' ' + curY) +
+    kpi('Fixed Expenses', fmtE(c.fixed), 'orange', 'Recurring') +
+    kpi('Variable Spending', fmtE(c.variable), varCol, 'Total from cats') +
+    kpi('Total Saved', fmtE(c.saved), savedCol, 'Earned minus all') +
+    kpi('Savings Rate', c.rate.toFixed(1) + '%', rateCol, rateNote);
+
+  var labels = [], earnA = [], spentA = [], savedA = [], rows = '';
+  for(var i = 0; i <= tdy.m; i++){
+    var y2 = tdy.y, m2 = i;
+    var cc = compute(y2, m2);
+    // Apply the category override only for the current month
+    if(y2 === curY && m2 === curM) {
+        cc.variable = currentVar;
+        cc.spent = c.spent;
+        cc.saved = c.saved;
+        cc.rate = c.rate;
+    }
+    labels.push(MONTHS_S[m2] + ' ' + y2);
     earnA.push(cc.salary); spentA.push(cc.spent); savedA.push(cc.saved);
-    var sc=cc.saved>=0?'gn':'rd';
-    var rc=cc.rate>=20?'gn':cc.rate>=10?'am':'rd';
-    rows+='<tr>'
-      +'<td>'+MONTHS_S[m2]+' '+y2+'</td>'
-      +'<td>'+fmtE(cc.salary)+'</td>'
-      +'<td>'+fmtE(cc.fixed)+'</td>'
-      +'<td>'+fmtE(cc.variable)+'</td>'
-      +'<td>'+fmtE(cc.spent)+'</td>'
-      +'<td><span class="tag '+sc+'">'+fmtE(cc.saved)+'</span></td>'
-      +'<td><span class="tag '+rc+'">'+cc.rate.toFixed(1)+'%</span></td>'
-      +'</tr>';
+    var sc = cc.saved >= 0 ? 'gn' : 'rd';
+    var rc = cc.rate >= 20 ? 'gn' : cc.rate >= 10 ? 'am' : 'rd';
+    rows += '<tr>'
+      + '<td>' + MONTHS_S[m2] + ' ' + y2 + '</td>'
+      + '<td>' + fmtE(cc.salary) + '</td>'
+      + '<td>' + fmtE(cc.fixed) + '</td>'
+      + '<td>' + fmtE(cc.variable) + '</td>'
+      + '<td>' + fmtE(cc.spent) + '</td>'
+      + '<td><span class="tag ' + sc + '">' + fmtE(cc.saved) + '</span></td>'
+      + '<td><span class="tag ' + rc + '">' + cc.rate.toFixed(1) + '%</span></td>'
+      + '</tr>';
   }
-  document.getElementById('monthTbody').innerHTML=rows;
+  document.getElementById('monthTbody').innerHTML = rows;
 
-  var isDark=document.documentElement.getAttribute('data-theme')==='dark';
-  var gc=isDark?'rgba(255,255,255,0.05)':'rgba(0,0,0,0.05)';
-  var tc=isDark?'#6b7694':'#8896aa';
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  var gc = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+  var tc = isDark ? '#6b7694' : '#8896aa';
   if(chartInst) chartInst.destroy();
-  chartInst=new Chart(document.getElementById('monthChart'),{
-    type:'bar',
-    data:{labels:labels,datasets:[
-      {label:'Earned',data:earnA,backgroundColor:'rgba(59,130,246,0.75)',borderColor:'#3b82f6',borderWidth:2,borderRadius:5},
-      {label:'Spent', data:spentA,backgroundColor:'rgba(239,68,68,0.65)',borderColor:'#ef4444',borderWidth:2,borderRadius:5},
-      {label:'Saved', data:savedA.map(function(v){return v<0?0:v;}),backgroundColor:'rgba(34,197,94,0.7)',borderColor:'#22c55e',borderWidth:2,borderRadius:5}
+  chartInst = new Chart(document.getElementById('monthChart'), {
+    type: 'bar',
+    data: { labels: labels, datasets: [
+      { label: 'Earned', data: earnA, backgroundColor: 'rgba(59,130,246,0.75)', borderColor: '#3b82f6', borderWidth: 2, borderRadius: 5 },
+      { label: 'Spent', data: spentA, backgroundColor: 'rgba(239,68,68,0.65)', borderColor: '#ef4444', borderWidth: 2, borderRadius: 5 },
+      { label: 'Saved', data: savedA.map(function(v){ return v < 0 ? 0 : v; }), backgroundColor: 'rgba(34,197,94,0.7)', borderColor: '#22c55e', borderWidth: 2, borderRadius: 5 }
     ]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:true,labels:{color:tc,font:{size:10},boxWidth:12,padding:10}},
-        tooltip:{backgroundColor:'rgba(14,17,23,0.92)',titleColor:'#fff',bodyColor:'#e8eaf0',cornerRadius:10,padding:10}},
-      scales:{
-        x:{grid:{color:gc},ticks:{color:tc,font:{size:10}}},
-        y:{grid:{color:gc},ticks:{color:tc,font:{size:10},callback:function(v){return '\u20AC'+v.toLocaleString();}}}
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: true, labels: { color: tc, font: { size: 10 }, boxWidth: 12, padding: 10 } },
+        tooltip: { backgroundColor: 'rgba(14,17,23,0.92)', titleColor: '#fff', bodyColor: '#e8eaf0', cornerRadius: 10, padding: 10 } },
+      scales: {
+        x: { grid: { color: gc }, ticks: { color: tc, font: { size: 10 } } },
+        y: { grid: { color: gc }, ticks: { color: tc, font: { size: 10 }, callback: function(v){ return '\u20AC' + v.toLocaleString(); } } }
       }
     }
   });
