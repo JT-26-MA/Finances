@@ -398,23 +398,21 @@ function compute(y,m){
 }
 
 function renderDash(){
-  var tdy=todayYMD();
-  var c=compute(tdy.y,tdy.m);
+  var c=compute(curY,curM);
   var varCol=(c.salary>0&&c.variable>(c.salary-c.fixed))?'red':'green';
   var savedCol=c.saved>=0?'green':'red';
   var rateCol=c.rate>=20?'green':c.rate>=10?'amber':'red';
   var rateNote=c.rate>=20?'Great':c.rate>=10?'Average':'Low';
   document.getElementById('kpiGrid').innerHTML=
-    kpi('Net Salary',fmtE(c.salary),'blue',MONTHS_S[tdy.m]+' '+tdy.y)+
+    kpi('Net Salary',fmtE(c.salary),'blue',MONTHS_S[curM]+' '+curY)+
     kpi('Fixed Expenses',fmtE(c.fixed),'orange','Recurring')+
     kpi('Variable Spending',fmtE(c.variable),varCol,'Daily total')+
     kpi('Total Saved',fmtE(c.saved),savedCol,'Earned minus all')+
     kpi('Savings Rate',c.rate.toFixed(1)+'%',rateCol,rateNote);
 
   var labels=[],earnA=[],spentA=[],savedA=[],rows='';
-  for(var i=5;i>=0;i--){
-    var y2=tdy.y, m2=tdy.m-i;
-    while(m2<0){m2+=12;y2--;}
+  for(var i=0;i<=tdy.m;i++){
+    var y2=tdy.y, m2=i;
     var cc=compute(y2,m2);
     labels.push(MONTHS_S[m2]+' '+y2);
     earnA.push(cc.salary); spentA.push(cc.spent); savedA.push(cc.saved);
