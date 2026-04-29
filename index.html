@@ -272,11 +272,20 @@ function getMD(y,m){ var d=lsJ(mKey(y,m))||{}; if(!d.salary)d.salary=0; if(!d.da
 function saveMD(y,m,d){ lsS(mKey(y,m),d); }
 function getFixed(){ return lsJ('sl_fixed_'+curY+'_'+curM)||defFixed(); }
 function saveFixed(a){ lsS('sl_fixed_'+curY+'_'+curM,a); }
-function defFixed(){ return [
-  {name:'Rent',amount:0},{name:'Internet',amount:0},{name:'Insurance',amount:0},
-  {name:'Phone',amount:0},{name:'Streaming',amount:0},{name:'Transport',amount:0},
-  {name:'Gym',amount:0},{name:'Savings Transfer',amount:0},{name:'Other 1',amount:0},{name:'Other 2',amount:0}
-]; }
+function defFixed(){ 
+  return [
+    {name:'Rent', amount: 800},
+    {name:'Internet', amount: 40},
+    {name:'Insurance', amount: 50},
+    {name:'Phone', amount: 20},
+    {name:'Streaming', amount: 15},
+    {name:'Transport', amount: 60},
+    {name:'Gym', amount: 30},
+    {name:'Savings Transfer', amount: 200},
+    {name:'Other 1', amount: 0},
+    {name:'Other 2', amount: 0}
+  ]; 
+}
 
 function fmtE(n){ return '\u20AC'+(Math.round(n||0)).toLocaleString(); }
 function daysIn(y,m){ return new Date(y,m+1,0).getDate(); }
