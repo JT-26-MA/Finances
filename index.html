@@ -325,7 +325,7 @@ function loadAll(){
   if(curY===t.y&&curM===t.m) label+=' <span class="cur-pill">Current</span>';
   document.getElementById('monthDisplay').innerHTML=label;
   document.getElementById('salaryMonthLabel').textContent=MONTHS_S[curM]+' '+curY;
-  loadSalary(); loadFixed2(); loadDays();
+  loadSalary(); loadFixed2(); 
 }
 
 function loadSalary(){
@@ -370,26 +370,7 @@ document.getElementById('fixedRows').addEventListener('input',function(e){
   if(e.target.closest('.fn')||e.target.closest('.fa')) saveFixed(readFixed());
 });
 
-function loadDays(){
-  var days=daysIn(curY,curM);
-  var d=getMD(curY,curM);
-  var t=todayYMD();
-  var h='';
-  for(var day=1;day<=days;day++){
-    var k=(day<10?'0':'')+day;
-    var v=d.daily[k]||'';
-    var dt=new Date(curY,curM,day);
-    var dow=DAYS_S[dt.getDay()];
-    var lbl=dow+' '+MONTHS_S[curM]+' '+day;
-    var isToday=(t.y===curY&&t.m===curM&&t.day===day);
-    var hv=v>0?' has-val':'';
-    h+='<div class="day-row">'
-      +'<div class="day-lbl'+(isToday?' today':'')+'">'+lbl+'</div>'
-      +'<input type="number" class="day-inp'+hv+'" data-day="'+k+'" value="'+(v||'')+'" placeholder="0" min="0"/>'
-      +'</div>';
-  }
-  document.getElementById('dayGrid').innerHTML=h;
-}
+
 document.getElementById('dayGrid').addEventListener('input',function(e){
   var inp=e.target.closest('.day-inp'); if(!inp) return;
   var v=parseFloat(inp.value)||0;
