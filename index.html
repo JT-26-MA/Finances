@@ -29,7 +29,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{min-height:100vh;}
 body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:background .3s,color .3s;overflow-x:hidden;}
-.app{max-width:560px;margin:0 auto;padding-bottom:120px;}
+.app{max-width:560px;margin:0 auto;padding-bottom:20px;}
 .hdr{position:sticky;top:0;z-index:100;background:var(--bg);padding:14px 18px 10px;border-bottom:1px solid var(--bd);backdrop-filter:blur(20px);}
 .hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .logo{display:flex;align-items:center;gap:8px;}
@@ -150,7 +150,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
       </div>
       <div class="hbtns">
         <button type="button" class="hbtn" id="syncBtn" title="Cloud Sync">&#9729;<span class="sdot" id="syncDot"></span></button>
-        <button type="button" class="hbtn" id="themeBtn" title="Theme">&#9728;</button>
+        <button type="button" class="hbtn" id="themeBtn" title="Theme">☀️</button>
       </div>
     </div>
     <div class="mnav">
@@ -212,10 +212,6 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
   </div>
 </div>
 
-<div class="bnav">
-  <button type="button" class="nbtn active" data-tab="log"><span class="ni">&#128203;</span>Log</button>
-  <button type="button" class="nbtn" data-tab="dashboard"><span class="ni">&#128202;</span>Dashboard</button>
-</div>
 
 <div class="overlay" id="syncModal">
   <div class="modal">
@@ -477,7 +473,7 @@ for(var ti=0;ti<allTabs.length;ti++){
 document.getElementById('themeBtn').addEventListener('click',function(){
   var dk=document.documentElement.getAttribute('data-theme')==='dark';
   document.documentElement.setAttribute('data-theme',dk?'light':'dark');
-  this.textContent=dk?'&#9728;':'&#9790;';
+  this.innerHTML=dk?'☀️':'🌙';
   if(document.getElementById('tc-dashboard').classList.contains('active')) renderDash();
 });
 
