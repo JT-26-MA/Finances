@@ -400,7 +400,31 @@ function debugData(){
   console.log('compute result:', compute(curY, curM));
   console.log('=============');
 }
+
+ // === CATEGORY SYSTEM ===
+document.getElementById('addCat').addEventListener('click', function(){
+  var cat = document.getElementById('newCat').value;
+  var amt = parseFloat(document.getElementById('newAmt').value) || 0;
   
+  if(amt === 0) return showToast('Enter amount', '⚠️');
+  
+  var cats = lsJ('sl_cats') || {};
+  cats[cat] = (cats[cat] || 0) + amt;
+  lsS('sl_cats', cats);
+  
+  // Clear inputs
+  document.getElementById('newAmt').value = '';
+  
+  showToast(cat + ': €' + amt.toFixed(0), '✅');
+  
+  // Refresh dashboard if open
+  if(document.getElementById('tc-dashboard').classList.contains('active')) {
+    renderDash();
+  }
+});
+
+// Auto-refresh dashboard when switching tabs
+document.querySelector('[data-tab="dashboard"]').addEventListener('click', renderDash); 
 function renderDash(){
   debugData(); 
   var tdy = todayYMD();
