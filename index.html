@@ -86,6 +86,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
 .dash-card{margin:12px 18px 0;background:var(--card);border-radius:var(--r);padding:16px;box-shadow:var(--sh);border:1px solid var(--bd);}
 .dash-ttl{font-size:.72rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:13px;}
 .cwrap{position:relative;height:180px;}
+.cwrap-pie{position:relative;height:220px;}
 .mtbl{width:100%;border-collapse:collapse;font-size:.73rem;}
 .mtbl th{color:var(--t3);font-weight:700;text-align:right;padding:5px 7px;border-bottom:1px solid var(--bd);white-space:nowrap;}
 .mtbl th:first-child{text-align:left;}
@@ -97,6 +98,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
 .tag.gn{background:rgba(34,197,94,.15);color:var(--gn);}
 .tag.rd{background:rgba(239,68,68,.15);color:var(--rd);}
 .tag.am{background:rgba(245,158,11,.15);color:var(--am);}
+.no-data{font-size:.78rem;color:var(--t3);text-align:center;padding:40px 0;}
 .overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity var(--tr);}
 .overlay.open{opacity:1;pointer-events:all;}
 .modal{background:var(--card);border-radius:var(--r) var(--r) 0 0;padding:22px 20px 44px;width:100%;max-width:560px;transform:translateY(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);box-shadow:0 -8px 40px rgba(0,0,0,.3);max-height:85vh;overflow-y:auto;}
@@ -105,8 +107,6 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
 .mtitle{font-size:1rem;font-weight:900;margin-bottom:16px;}
 .mf{margin-bottom:13px;}
 .ml{font-size:.7rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;display:block;}
-.mhint{font-size:.67rem;color:var(--t3);margin-top:3px;line-height:1.4;}
-.mhint a{color:var(--bl);text-decoration:none;}
 .mi{width:100%;padding:11px 13px;background:var(--ib);border:1.5px solid var(--bd);border-radius:11px;color:var(--tx);font-family:var(--f);font-size:.88rem;font-weight:600;outline:none;transition:border-color var(--tr);}
 .mi:focus{border-color:var(--bl);}
 .msave{width:100%;padding:13px;background:linear-gradient(135deg,var(--blue),var(--bl));border:none;border-radius:13px;color:#fff;font-family:var(--f);font-size:.9rem;font-weight:900;cursor:pointer;box-shadow:0 4px 18px var(--bg2);transition:all var(--tr);margin-top:4px;}
@@ -166,7 +166,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
     <button type="button" class="tab" data-tab="year">&#128200; YTD</button>
   </div>
 
-  <!-- ✅ LOG TAB -->
+  <!-- LOG TAB -->
   <div class="tc active" id="tc-log">
     <div class="scard">
       <div class="scard-ttl">&#128179; Net Salary &mdash; <span id="salaryMonthLabel" style="color:var(--bl);margin-left:4px;"></span></div>
@@ -175,21 +175,18 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
         <button type="button" class="save-btn" id="saveSalary">Save</button>
       </div>
     </div>
-
     <div class="scard">
       <div class="scard-ttl">&#128204; Fixed Monthly Expenses</div>
       <div id="fixedRows"></div>
       <button type="button" class="add-row-btn" id="addFixedRow">+ Add Expense</button>
     </div>
-
     <div class="scard">
       <div class="scard-ttl">&#128197; Variable Expenses</div>
       <div id="catList" class="day-grid"></div>
       <div style="margin-top:10px;display:flex;gap:6px;">
         <select class="finp" id="newCat">
-          <option value="Restaurant">Restaurant</option>
-          <option value="Morocco">Morocco</option>
-          <option value="Holidays">Holidays</option>
+          <option value="Food">Food</option>
+          <option value="Transport">Transport</option>
           <option value="Shopping">Shopping</option>
           <option value="Fun">Fun</option>
           <option value="Health">Health</option>
@@ -201,12 +198,17 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
     </div>
   </div>
 
-  <!-- ✅ DASHBOARD TAB — sibling of tc-log, NOT inside it -->
+  <!-- DASHBOARD TAB -->
   <div class="tc" id="tc-dashboard">
     <div class="kpi-grid" id="kpiGrid"></div>
     <div class="dash-card">
-      <div class="dash-ttl">Last 6 Months &mdash; Earned vs Spent vs Saved</div>
+      <div class="dash-ttl">This Year &mdash; Earned vs Spent vs Saved</div>
       <div class="cwrap"><canvas id="monthChart"></canvas></div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-ttl">Variable Expenses &mdash; <span id="pieMonthLabel"></span></div>
+      <div class="cwrap-pie"><canvas id="catPieChart"></canvas></div>
+      <div class="no-data" id="catPieEmpty" style="display:none;">No variable expenses logged yet.</div>
     </div>
     <div class="dash-card" style="margin-bottom:12px;">
       <div class="dash-ttl">Monthly Breakdown</div>
@@ -221,12 +223,17 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
     </div>
   </div>
 
-  <!-- ✅ YTD TAB — sibling of tc-log, NOT inside it -->
+  <!-- YTD TAB -->
   <div class="tc" id="tc-year">
     <div class="kpi-grid" id="yearKpiGrid"></div>
-    <div class="dash-card" style="margin-bottom:12px;">
+    <div class="dash-card">
       <div class="dash-ttl" id="yearChartTitle">Year Overview</div>
       <div class="cwrap"><canvas id="yearChart"></canvas></div>
+    </div>
+    <div class="dash-card" style="margin-bottom:12px;">
+      <div class="dash-ttl">Variable Expenses &mdash; Full Year</div>
+      <div class="cwrap-pie"><canvas id="yearPieChart"></canvas></div>
+      <div class="no-data" id="yearPieEmpty" style="display:none;">No variable expenses logged yet.</div>
     </div>
   </div>
 
@@ -276,26 +283,31 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
 <script>
 var MONTHS   = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 var MONTHS_S = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-var GIST_FILE = 'spendlog_data.json';
 
 var now  = new Date();
 var curY = now.getFullYear();
 var curM = now.getMonth();
-var syncCfg  = lsJ('sl_sync') || {token:'',gistId:'',lastSync:''};
+var syncCfg   = lsJ('sl_sync') || {token:'',gistId:'',lastSync:''};
 var chartInst = null;
+var catPieInst  = null;
+var yearPieInst = null;
+var yearBarInst = null;
+
+var PIE_COLORS = [
+  'rgba(59,130,246,0.85)','rgba(239,68,68,0.85)','rgba(34,197,94,0.85)',
+  'rgba(245,158,11,0.85)','rgba(168,85,247,0.85)','rgba(20,184,166,0.85)',
+  'rgba(249,115,22,0.85)','rgba(236,72,153,0.85)'
+];
 
 function lsJ(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } }
 function lsS(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
-
 function mKey(y,m){ return 'spending_'+y+'_'+(m+1<10?'0':'')+(m+1); }
 function getMD(y,m){ var d=lsJ(mKey(y,m))||{}; if(!d.salary)d.salary=0; if(!d.daily)d.daily={}; return d; }
 function saveMD(y,m,d){ lsS(mKey(y,m),d); }
-
 function catsKey(y,m){ return 'sl_cats_'+y+'_'+m; }
 function getCats(y,m){ return lsJ(catsKey(y,m)) || {}; }
-function saveCats(y,m,cats){ lsS(catsKey(y,m), cats); }
+function saveCats(y,m,cats){ lsS(catsKey(y,m),cats); }
 function catTotal(y,m){ var c=getCats(y,m); return Object.values(c).reduce(function(a,b){return a+b;},0); }
-
 function getFixed(){ return lsJ('sl_fixed_'+curY+'_'+curM)||defFixed(); }
 function saveFixed(a){ lsS('sl_fixed_'+curY+'_'+curM,a); }
 function defFixed(){
@@ -306,9 +318,7 @@ function defFixed(){
     {name:'Credit',amount:440},{name:'Telephone',amount:12}
   ];
 }
-
 function fmtE(n){ return '\u20AC'+(Math.round(n||0)).toLocaleString(); }
-function daysIn(y,m){ return new Date(y,m+1,0).getDate(); }
 function todayYMD(){ var d=new Date(); return {y:d.getFullYear(),m:d.getMonth(),day:d.getDate()}; }
 function escH(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -320,7 +330,6 @@ function showToast(msg,icon){
 }
 function openM(id){document.getElementById(id).classList.add('open');}
 function closeM(id){document.getElementById(id).classList.remove('open');}
-
 function kpi(lbl,val,cls,sub){
   return '<div class="kpi"><div class="kpi-lbl">'+lbl+'</div><div class="kpi-val '+cls+'">'+val+'</div><div class="kpi-sub">'+sub+'</div></div>';
 }
@@ -356,7 +365,7 @@ document.getElementById('salaryInput').addEventListener('input',function(){
   var d=getMD(curY,curM); d.salary=v; saveMD(curY,curM,d);
 });
 
-// ── Fixed expenses ──
+// ── Fixed ──
 function loadFixed2(){ renderFixed(getFixed()); }
 function renderFixed(arr){
   var h='';
@@ -385,18 +394,20 @@ document.getElementById('fixedRows').addEventListener('input',function(e){
   if(e.target.closest('.fn')||e.target.closest('.fa')) saveFixed(readFixed());
 });
 
-// ── Variable / Categories ──
+// ── Categories ──
 function loadCats(){
   var cats=getCats(curY,curM);
   var keys=Object.keys(cats);
   var h='';
-  if(keys.length===0){ h='<div style="color:var(--t3);font-size:.78rem;padding:4px 0;">No entries yet.</div>'; }
+  if(keys.length===0){
+    h='<div style="color:var(--t3);font-size:.78rem;padding:4px 0;">No entries yet.</div>';
+  }
   for(var i=0;i<keys.length;i++){
     h+='<div class="cat-row">'
       +'<span class="cat-row-lbl">'+escH(keys[i])+'</span>'
-      +'<span>'
+      +'<span style="display:flex;align-items:center;gap:8px;">'
       +'<span class="cat-row-amt">'+fmtE(cats[keys[i]])+'</span>'
-      +' <button type="button" class="del-btn" style="width:26px;height:26px;font-size:14px;" data-cat="'+escH(keys[i])+'">&times;</button>'
+      +'<button type="button" class="del-btn" style="width:26px;height:26px;font-size:14px;" data-cat="'+escH(keys[i])+'">&times;</button>'
       +'</span>'
       +'</div>';
   }
@@ -435,6 +446,65 @@ function compute(y,m){
   return {salary:sal,fixed:totFx,variable:totVar,spent:spent,saved:saved,rate:rate};
 }
 
+// ── Pie helper ──
+function renderPie(canvasId, emptyId, cats, instName){
+  var labels=Object.keys(cats);
+  var data=Object.values(cats);
+  var isEmpty=labels.length===0||data.reduce(function(a,b){return a+b;},0)===0;
+
+  document.getElementById(canvasId).style.display=isEmpty?'none':'block';
+  document.getElementById(emptyId).style.display=isEmpty?'block':'none';
+  if(isEmpty) return;
+
+  if(instName==='catPieInst'  && catPieInst)  { catPieInst.destroy();  catPieInst=null; }
+  if(instName==='yearPieInst' && yearPieInst) { yearPieInst.destroy(); yearPieInst=null; }
+
+  var isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  var tc=isDark?'#9aa3b8':'#4a5570';
+  var borderCol=isDark?'#182030':'#eef1f7';
+
+  var chart=new Chart(document.getElementById(canvasId),{
+    type:'doughnut',
+    data:{
+      labels:labels,
+      datasets:[{
+        data:data,
+        backgroundColor:PIE_COLORS.slice(0,labels.length),
+        borderWidth:2,
+        borderColor:borderCol
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{
+        legend:{
+          display:true,
+          position:'right',
+          labels:{color:tc,font:{size:10},boxWidth:12,padding:10}
+        },
+        tooltip:{
+          backgroundColor:'rgba(14,17,23,0.92)',
+          titleColor:'#fff',
+          bodyColor:'#e8eaf0',
+          cornerRadius:10,
+          padding:10,
+          callbacks:{
+            label:function(ctx){
+              var total=ctx.dataset.data.reduce(function(a,b){return a+b;},0);
+              var pct=total>0?((ctx.parsed/total)*100).toFixed(1):0;
+              return ' \u20AC'+Math.round(ctx.parsed).toLocaleString()+'  ('+pct+'%)';
+            }
+          }
+        }
+      }
+    }
+  });
+
+  if(instName==='catPieInst')  catPieInst=chart;
+  if(instName==='yearPieInst') yearPieInst=chart;
+}
+
 // ── Dashboard ──
 function renderDash(){
   var tdy=todayYMD();
@@ -450,6 +520,8 @@ function renderDash(){
     kpi('Variable Spending',fmtE(c.variable),varCol,'Categories')+
     kpi('Total Saved',fmtE(c.saved),savedCol,'Earned minus all')+
     kpi('Savings Rate',c.rate.toFixed(1)+'%',rateCol,rateNote);
+
+  document.getElementById('pieMonthLabel').textContent=MONTHS_S[curM]+' '+curY;
 
   var labels=[],earnA=[],spentA=[],savedA=[],rows='';
   for(var i=0;i<=tdy.m;i++){
@@ -490,6 +562,8 @@ function renderDash(){
       }
     }
   });
+
+  renderPie('catPieChart','catPieEmpty',getCats(curY,curM),'catPieInst');
 }
 
 // ── YTD ──
@@ -498,12 +572,19 @@ function renderYear(){
   var maxM=(now.getFullYear()===y)?now.getMonth():11;
   var labels=[],earnA=[],spentA=[],savedA=[];
   var totSal=0,totFx=0,totVar=0;
+  var yearCats={};
 
   for(var m=0;m<=maxM;m++){
     var c=compute(y,m);
     labels.push(MONTHS_S[m]);
     earnA.push(c.salary); spentA.push(c.spent); savedA.push(c.saved);
     totSal+=c.salary; totFx+=c.fixed; totVar+=c.variable;
+
+    var mc=getCats(y,m);
+    var mk=Object.keys(mc);
+    for(var k=0;k<mk.length;k++){
+      yearCats[mk[k]]=(yearCats[mk[k]]||0)+mc[mk[k]];
+    }
   }
 
   var totSpent=totFx+totVar;
@@ -525,8 +606,8 @@ function renderYear(){
   var isDark=document.documentElement.getAttribute('data-theme')==='dark';
   var gc=isDark?'rgba(255,255,255,0.05)':'rgba(0,0,0,0.05)';
   var tc=isDark?'#6b7694':'#8896aa';
-  if(window.yearChartInst) window.yearChartInst.destroy();
-  window.yearChartInst=new Chart(document.getElementById('yearChart'),{
+  if(yearBarInst) yearBarInst.destroy();
+  yearBarInst=new Chart(document.getElementById('yearChart'),{
     type:'bar',
     data:{labels:labels,datasets:[
       {label:'Earned',data:earnA,backgroundColor:'rgba(59,130,246,0.75)',borderColor:'#3b82f6',borderWidth:2,borderRadius:5},
@@ -542,6 +623,8 @@ function renderYear(){
       }
     }
   });
+
+  renderPie('yearPieChart','yearPieEmpty',yearCats,'yearPieInst');
 }
 
 // ── Tabs ──
@@ -569,7 +652,7 @@ document.getElementById('themeBtn').addEventListener('click',function(){
   if(document.getElementById('tc-year').classList.contains('active')) renderYear();
 });
 
-// ── Sync ──
+// ── Sync modal ──
 document.getElementById('syncBtn').addEventListener('click',function(){
   document.getElementById('sToken').value=syncCfg.token||'';
   document.getElementById('sGistId').value=syncCfg.gistId||'';
@@ -628,7 +711,11 @@ function doSync(push){
     plb.textContent='Pulling...';
     fetch('https://api.jsonbin.io/v3/b/'+syncCfg.gistId+'/latest',{headers:hdrs})
       .then(function(r){return r.json();})
-      .then(function(res){applyData(res.record);loadAll();syncCfg.lastSync=new Date().toLocaleTimeString();lsS('sl_sync',syncCfg);updateSyncUI();document.getElementById('syncDot').className='sdot on';showToast('Pulled from Cloud','OK');})
+      .then(function(res){
+        applyData(res.record);loadAll();
+        syncCfg.lastSync=new Date().toLocaleTimeString();lsS('sl_sync',syncCfg);updateSyncUI();
+        document.getElementById('syncDot').className='sdot on';showToast('Pulled from Cloud','OK');
+      })
       .catch(function(){document.getElementById('syncDot').className='sdot err on';showToast('Pull failed','ERR');})
       .finally(function(){pb.disabled=false;plb.disabled=false;plb.textContent='↓ Pull';});
   }
