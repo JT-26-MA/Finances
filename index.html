@@ -390,7 +390,19 @@ function compute(y,m){
   return {salary:sal,fixed:totFx,variable:totVar,spent:spent,saved:saved,rate:rate};
 }
 
+function debugData(){
+  console.log('=== DEBUG ===');
+  console.log('curY, curM:', curY, curM);
+  console.log('sl_cats:', lsJ('sl_cats'));
+  var d = getMD(curY, curM);
+  console.log('getMD result:', d);
+  console.log('d.daily:', d.daily);
+  console.log('compute result:', compute(curY, curM));
+  console.log('=============');
+}
+  
 function renderDash(){
+  debugData(); 
   var tdy = todayYMD();
   // Get variable spending from the new cat system
   var catTotals = lsJ('sl_cats') || {};
