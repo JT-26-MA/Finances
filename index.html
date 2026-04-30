@@ -198,6 +198,15 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
     </div>
   </div>
 
+  <div class="scard" style="margin-bottom:12px;">
+  <div class="scard-ttl">&#127981; Import Revolut CSV</div>
+  <p style="font-size:.75rem;color:var(--t3);margin-bottom:10px;line-height:1.5;">
+    Export your statement from Revolut app → Profile → Statements → CSV. Only card payments are imported.
+  </p>
+  <button type="button" class="save-btn" id="importRevolutBtn" style="width:100%;">&#8593; Import Revolut CSV</button>
+  <input type="file" id="revolutFile" accept=".csv" style="display:none"/>
+</div>
+
   <!-- DASHBOARD TAB -->
   <div class="tc" id="tc-dashboard">
     <div class="kpi-grid" id="kpiGrid"></div>
@@ -238,7 +247,16 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);transition:backgr
   </div>
 
 </div>
-
+<div class="overlay" id="rvModal">
+  <div class="modal">
+    <div class="mhandle"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div class="mtitle" style="margin-bottom:0;">&#127981; Revolut Import</div>
+      <button id="closeRvBtn" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--t2);line-height:1;">&#x2715;</button>
+    </div>
+    <div id="rvModalBody"></div>
+  </div>
+</div>
 <!-- SYNC MODAL -->
 <div class="overlay" id="syncModal">
   <div class="modal">
@@ -665,7 +683,7 @@ document.getElementById('saveSyncCfg').addEventListener('click',function(){
   syncCfg.gistId=document.getElementById('sGistId').value.trim();
   lsS('sl_sync',syncCfg); updateSyncUI(); showToast('Config saved','OK');
 });
-
+document.getElementById('closeRvBtn').addEventListener('click', function(){ closeM('rvModal'); });
 function fullData(){
   var data={fixed:{},months:{},cats:{}};
   var keys=Object.keys(localStorage);
@@ -736,6 +754,153 @@ document.getElementById('importFile').addEventListener('change',function(e){
   r.readAsText(e.target.files[0]);e.target.value='';
 });
 
+// ── Revolut CSV Import ──
+var REVOLUT_MAP = {
+  'lidl':'Food','carrefour':'Food','franprix':'Food','monoprix':'Food',
+  'colruyt':'Food','leclerc':'Food','aldi':'Food','picard':'Food',
+  'frites':'Food','mcdonalds':'Food','burger':'Food','subway':'Food',
+  'starbucks':'Food','paul':'Food','brioche':'Food',
+  'shell':'Transport','total':'Transport','sanef':'Transport',
+  'adp':'Transport','servipark':'Transport','ratp':'Transport',
+  'sncf':'Transport','uber':'Transport','bolt':'Transport',
+  'netflix':'Fun','canal':'Fun','spotify':'Fun','deezer':'Fun',
+  'google':'Fun','apple':'Fun','steam':'Fun','disney':'Fun',
+  'amazon':'Shopping','vinted':'Shopping','asos':'Shopping',
+  'zara':'Shopping','hm':'Shopping','dhgate':'Shopping',
+  'rakuten':'Shopping','action':'Shopping','ikea':'Shopping',
+  'pharmacy':'Health','pharmacie':'Health','docteur':'Health',
+  'medecin':'Health','optic':'Health','gym':'Health'
+};
+
+function revolutCategory(desc){
+  var d = desc.toLowerCase();
+  var keys = Object.keys(REVOLUT_MAP);
+  for(var i=0;i<keys.length;i++){
+    if(d.indexOf(keys[i]) !== -1) return REVOLUT_MAP[keys[i]];
+  }
+  return 'Other';
+}
+
+function parseRevolutCSV(text){
+  var lines = text.trim().split('\n');
+  var results = [];
+  // Skip header row (index 0)
+  for(var i=1;i<lines.length;i++){
+    var line = lines[i].trim();
+    if(!line) continue;
+    // Handle quoted commas
+    var cols = [];
+    var cur = '', inQ = false;
+    for(var c=0;c<line.length;c++){
+      if(line[c]==='"'){ inQ=!inQ; }
+      else if(line[c]===','&&!inQ){ cols.push(cur); cur=''; }
+      else { cur+=line[c]; }
+    }
+    cols.push(cur);
+
+    var type    = (cols[0]||'').trim();
+    var dateStr = (cols[2]||'').trim();   // Date de début
+    var desc    = (cols[4]||'').trim();   // Description
+    var amt     = parseFloat((cols[5]||'0').replace(',','.'));
+    var fees    = parseFloat((cols[6]||'0').replace(',','.'));
+    var status  = (cols[8]||'').trim();
+
+    // Only import completed card payments that are expenses (negative)
+    if(type !== 'Paiement par carte') continue;
+    if(status === 'RENVOYÉ') continue;
+    if(amt >= 0) continue;
+
+    var totalAmt = Math.abs(amt) + Math.abs(fees);
+    var date = new Date(dateStr);
+    if(isNaN(date.getTime())) continue;
+
+    results.push({
+      desc: desc,
+      amt: totalAmt,
+      cat: revolutCategory(desc),
+      y: date.getFullYear(),
+      m: date.getMonth()
+    });
+  }
+  return results;
+}
+
+function showRevolutPreview(rows){
+  if(rows.length === 0){ showToast('No card payments found','⚠️'); return; }
+
+  var h = '<div style="max-height:55vh;overflow-y:auto;">';
+  h += '<p style="font-size:.72rem;color:var(--t3);margin-bottom:12px;">'+rows.length+' transactions found. Edit categories before importing.</p>';
+  
+  var catOptions = ['Food','Transport','Shopping','Fun','Health','Other']
+    .map(function(c){ return '<option value="'+c+'">'+c+'</option>'; }).join('');
+
+  for(var i=0;i<rows.length;i++){
+    var r = rows[i];
+    var opts = ['Food','Transport','Shopping','Fun','Health','Other']
+      .map(function(c){ return '<option value="'+c+'"'+(c===r.cat?' selected':'')+'>'+c+'</option>'; }).join('');
+    h += '<div style="display:grid;grid-template-columns:1fr 80px 110px 30px;gap:6px;align-items:center;margin-bottom:7px;">'
+      + '<span style="font-size:.75rem;font-weight:600;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+escH(r.desc)+'">'+escH(r.desc)+'</span>'
+      + '<span style="font-size:.78rem;font-weight:800;color:var(--or);text-align:right;">'+fmtE(r.amt)+'</span>'
+      + '<select class="rv-cat" data-i="'+i+'" style="padding:5px 7px;background:var(--ib);border:1.5px solid var(--bd);border-radius:8px;color:var(--tx);font-family:var(--f);font-size:.72rem;outline:none;">'+opts+'</select>'
+      + '<button type="button" class="del-btn rv-skip" data-i="'+i+'" style="width:26px;height:26px;font-size:13px;">&times;</button>'
+      + '</div>';
+  }
+  h += '</div>';
+  h += '<button type="button" class="msave" id="confirmRevolutImport" style="margin-top:14px;">&#8595; Import All</button>';
+
+  document.getElementById('rvModalBody').innerHTML = h;
+
+  // Skip row
+  document.getElementById('rvModalBody').addEventListener('click', function(e){
+    var b = e.target.closest('.rv-skip');
+    if(!b) return;
+    b.closest('div[style]').style.opacity='0.3';
+    b.closest('div[style]').style.pointerEvents='none';
+    rows[parseInt(b.dataset.i)]._skip = true;
+  });
+
+  // Category change
+  document.getElementById('rvModalBody').addEventListener('change', function(e){
+    var s = e.target.closest('.rv-cat');
+    if(!s) return;
+    rows[parseInt(s.dataset.i)].cat = s.value;
+  });
+
+  // Confirm import
+  document.getElementById('confirmRevolutImport').addEventListener('click', function(){
+    var imported = 0;
+    for(var i=0;i<rows.length;i++){
+      var r = rows[i];
+      if(r._skip) continue;
+      var cats = getCats(r.y, r.m);
+      cats[r.cat] = (cats[r.cat]||0) + r.amt;
+      saveCats(r.y, r.m, cats);
+      imported++;
+    }
+    closeM('rvModal');
+    loadAll();
+    showToast(imported+' transactions imported','✅');
+    if(document.getElementById('tc-dashboard').classList.contains('active')) renderDash();
+    if(document.getElementById('tc-year').classList.contains('active')) renderYear();
+  });
+
+  openM('rvModal');
+}
+
+document.getElementById('importRevolutBtn').addEventListener('click', function(){
+  document.getElementById('revolutFile').click();
+});
+document.getElementById('revolutFile').addEventListener('change', function(e){
+  if(!e.target.files[0]) return;
+  var r = new FileReader();
+  r.onload = function(ev){
+    var rows = parseRevolutCSV(ev.target.result);
+    showRevolutPreview(rows);
+  };
+  r.readAsText(e.target.files[0], 'UTF-8');
+  e.target.value = '';
+});
+  
 loadAll();
 updateSyncUI();
 </script>
