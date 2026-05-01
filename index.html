@@ -587,7 +587,7 @@ function renderDash(){
 // ── YTD ──
 function renderYear(){
   var y=curY;
-  var maxM=(now.getFullYear()===y)?now.getMonth():11;
+  var maxM=(now.getFullYear()===y)?now.getMonth()-1:11;
   var labels=[],earnA=[],spentA=[],savedA=[];
   var totSal=0,totFx=0,totVar=0;
   var yearCats={};
